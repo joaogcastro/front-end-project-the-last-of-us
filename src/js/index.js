@@ -1,64 +1,71 @@
-// Pegar o elemento do HTML dos botões
+//Pegar o elemento do HTML dos botões
 const botoesCarrossel = document.querySelectorAll('.botao');
-// Elemento HTML das imagens
+//Elemento HTML das imagens
 const imagens = document.querySelectorAll('.imagem');
-// Elemento HTML do texto
+//Elemento HTML do texto
 const descricoes = document.querySelectorAll('.descricao');
 
-let indiceAtual = 0;
-let intervalId;
+//Identificar o clique no botão
+botoesCarrossel.forEach((botao, i) => {
+    botao.addEventListener('click', () => {
 
-function marcarBotao(indice) {
-  desmarcarBotaoAnterior();
-  botoesCarrossel[indice].classList.add('selecionado');
+        desmarcarBotaoAnterior();
+
+        marcarNovoBotao(botao);
+
+        esconderImagemAnterior();
+
+        exibirNovaImagem(i);
+
+        esconderTextoAnterior();
+
+        exibirNovoTexto(i);
+    })
+})
+
+function marcarNovoBotao(botao) {
+    botao.classList.add('selecionado');
 }
 
 function desmarcarBotaoAnterior() {
-  const botaoSelecionado = document.querySelector('.selecionado');
-  if (botaoSelecionado) {
+    const botaoSelecionado = document.querySelector('.selecionado');
     botaoSelecionado.classList.remove('selecionado');
-  }
 }
 
-function mostrarImagem(indice) {
-  desativarImagemAnterior();
-  imagens[indice].classList.add('ativa');
+function exibirNovaImagem(i) {
+    imagens[i].classList.add('ativa');
 }
 
-function desativarImagemAnterior() {
-  const imagemAtiva = document.querySelector('.ativa');
-  if (imagemAtiva) {
+function esconderImagemAnterior() {
+    const imagemAtiva = document.querySelector('.ativa');
     imagemAtiva.classList.remove('ativa');
-  }
 }
 
-function mostrarDescricao(indice) {
-  desativarDescricaoAnterior();
-  descricoes[indice].classList.add('ativa');
+function exibirNovoTexto(i) {
+    descricoes[i].classList.add('ativo');
 }
 
-function desativarDescricaoAnterior() {
-  const descricaoAtiva = document.querySelector('.descricao.ativa');
-  if (descricaoAtiva) {
-    descricaoAtiva.classList.remove('ativa');
-  }
+function esconderTextoAnterior(){
+    const textoAtivo = document.querySelector('.ativo');
+    textoAtivo.classList.remove('ativo');
 }
 
-function iniciarCarrossel() {
-  // Selecionar o próximo botão e imagem
-  const proximoIndice = (indiceAtual + 1) % botoesCarrossel.length;
-  marcarBotao(proximoIndice);
-  mostrarImagem(proximoIndice);
-  mostrarDescricao(proximoIndice);
-  indiceAtual = proximoIndice;
+function selecionarProximoBotao() {
+    const botaoSelecionado = document.querySelector('.selecionado');
+    const proximoBotao = botaoSelecionado.nextElementSibling || botoesCarrossel[0];
+    const proximoIndice = Array.from(botoesCarrossel).indexOf(proximoBotao);
+
+    desmarcarBotaoAnterior();
+
+    marcarNovoBotao(proximoBotao);
+
+    esconderImagemAnterior();
+
+    exibirNovaImagem(proximoIndice);
+
+    esconderTextoAnterior();
+
+    exibirNovoTexto(proximoIndice);
 }
 
-// Iniciar o carrossel automaticamente após 10 segundos
-intervalId = setInterval(iniciarCarrossel, 10000);
-
-// Interromper o carrossel quando o usuário interagir com os botões
-botoesCarrossel.forEach((botao) => {
-  botao.addEventListener('click', () => {
-    clearInterval(intervalId);
-  });
-});
+setInterval(selecionarProximoBotao, 10000);
